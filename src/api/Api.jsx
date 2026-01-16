@@ -5,13 +5,15 @@ const apiPath = import.meta.env.VITE_API_PATH;
 
 // 存 token
 const getHeaders = () => {
-  const token = document.cookie.replace(
-    /(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/,
-    "$1"
-  );
-  // axios headers
+  const token = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("hexToken="))
+    ?.split("=")[1];
+
   return {
-    headers: { Authorization: token },
+    headers: {
+      Authorization: token,
+    },
   };
 };
 
