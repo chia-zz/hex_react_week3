@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import * as bootstrap from "bootstrap";
 import "react-toastify/dist/ReactToastify.css";
 
 // API
@@ -15,6 +16,7 @@ import {
 } from "../api/Api";
 // 元件
 import ProductModal from "../components/ProductModal";
+import DetailModal from "../components/DetailModal";
 
 function ProductPage() {
   const navigate = useNavigate();
@@ -38,6 +40,7 @@ function ProductPage() {
   // modal 設定
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState(null); // 'create' | 'edit'
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   // API
   // 取得商品資料
@@ -96,7 +99,7 @@ function ProductPage() {
     }
   };
 
-  // modal
+  // modal 區
 
   const openModal = (mode, product) => {
     setModalMode(mode);
@@ -167,34 +170,36 @@ function ProductPage() {
     }
   };
 
+  // 查看細節的 modal
+  const handleOpenDetail = (product) => {
+    setTempProduct(product); // 把要看的商品資料存進 tempProduct
+    setIsDetailModalOpen(true);
+  };
+
+  const handleCloseDetail = () => {
+    setIsDetailModalOpen(false);
+  };
+
   return (
     <div className="container p-5">
       <ToastContainer />
       <h1 className="text-white mb-4">產品列表</h1>
 
       <div className="mb-3 d-flex gap-2">
-        <button
-          className="btn btn-success"
-          onClick={getData}
-          style={{ marginRight: "10px" }}
-        >
-          重整資料
+        <button className="btn btn-success" onClick={getData}>
+          <i class="bi bi-arrow-clockwise me-1"></i>重整資料
         </button>
-        <button
-          className="btn btn-warning"
-          onClick={checkLogin}
-          style={{ marginRight: "10px" }}
-        >
-          驗證登入狀態
+        <button className="btn btn-warning" onClick={checkLogin}>
+          <i class="bi bi-person-check me-1"></i>驗證登入狀態
         </button>
         <button
           className="btn btn-primary"
           onClick={() => openModal("create", null)}
         >
-          建立新的商品
+          <i class="bi bi-plus-lg me-1"></i>建立新的商品
         </button>
-        <button className="btn btn-danger" onClick={handleLogout}>
-          登出
+        <button className="btn btn-danger ms-auto" onClick={handleLogout}>
+          <i class="bi bi-box-arrow-right me-1"></i>登出
         </button>
       </div>
 
@@ -225,6 +230,12 @@ function ProductPage() {
                 <td>
                   <button
                     className="btn btn-sm btn-outline-primary me-2"
+                    onClick={() => handleOpenDetail(item)}
+                  >
+                    查看內容
+                  </button>
+                  <button
+                    className="btn btn-sm btn-outline-primary me-2"
                     onClick={() => openModal("edit", item)}
                   >
                     編輯
@@ -241,7 +252,7 @@ function ProductPage() {
           </tbody>
         </table>
       </div>
-
+      {/* 新增/修改的 modal */}
       <ProductModal
         // 傳到子層
         isOpen={isProductModalOpen}
@@ -253,6 +264,13 @@ function ProductPage() {
         onAddImage={handleAddImage}
         onRemoveImage={handleRemoveImage}
         onSubmit={handleModalSubmit}
+      />
+      {/* 查看細節的 modal */}
+      <DetailModal
+        // 傳到子層
+        isOpen={isDetailModalOpen}
+        onClose={handleCloseDetail}
+        tempProduct={tempProduct}
       />
     </div>
   );
