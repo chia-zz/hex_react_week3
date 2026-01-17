@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import * as bootstrap from "bootstrap";
 import "react-toastify/dist/ReactToastify.css";
 
 // API
@@ -82,6 +81,7 @@ function ProductPage() {
       const res = adminLogout();
       document.cookie = "hexToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
       axios.defaults.headers.common["Authorization"] = "";
+      toast.success("成功登出", res.data);
       navigate("/");
     } catch (error) {
       toast.error("發生錯誤", error);
@@ -100,12 +100,13 @@ function ProductPage() {
   };
 
   // modal 區
-
   const openModal = (mode, product) => {
     setModalMode(mode);
     if (mode === "create") {
+      // 新增模式
       setTempProduct(addNewProduct);
     } else {
+      // 編輯模式
       setTempProduct(product);
     }
     setIsProductModalOpen(true);
@@ -153,7 +154,7 @@ function ProductPage() {
     });
   };
 
-  // 新增或修改商品
+  // 確認新增或修改商品
   const handleModalSubmit = async () => {
     try {
       if (modalMode === "create") {
@@ -235,7 +236,7 @@ function ProductPage() {
                     查看內容
                   </button>
                   <button
-                    className="btn btn-sm btn-outline-primary me-2"
+                    className="btn btn-sm btn-outline-success me-2"
                     onClick={() => openModal("edit", item)}
                   >
                     編輯

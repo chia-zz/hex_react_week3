@@ -10,47 +10,52 @@ function DetailModal({ tempProduct, isOpen, onClose }) {
   const modalRef = useRef(null);
   const bsModalRef = useRef(null);
 
+  // modal 開關設定
+  // 初始化
   useEffect(() => {
-    if (isOpen) {
-      bsModalRef.current = new bootstrap.Modal(modalRef.current);
-      bsModalRef.current.show();
-    } else if (bsModalRef.current) {
-      bsModalRef.current.hide();
-    }
-  }, [isOpen]);
-  useEffect(() => {
-    // 建立 Modal 實體
     const modalElement = modalRef.current;
-    const modalInstance = new bootstrap.Modal(modalElement, {
-      backdrop: true, // 允許點擊背景關閉
-      keyboard: true, // 允許按 Esc 關閉
-    });
+    if (!modalElement) return;
 
+    // 建立實體
+    const modalInstance = new bootstrap.Modal(modalElement, {
+      backdrop: true, // 可以點背景關閉
+      keyboard: true, // 可以點 esc 關閉
+    });
     bsModalRef.current = modalInstance;
 
-    // 顯示或隱藏
+    // 只有在元件真的要消失時，才 dispose modal
+    return () => {
+      modalInstance.dispose();
+    };
+  }, []); // 空陣列 -> 保證只建立一次
+
+  // 監聽 isOpen 狀態
+  useEffect(() => {
+    const modalInstance = bsModalRef.current;
+    if (!modalInstance) return;
+
     if (isOpen) {
       modalInstance.show();
     } else {
       modalInstance.hide();
     }
+  }, [isOpen]); // 只有 isOpen 變了才執行 show/hide
 
-    // --------------------------------------------------
-    // ⭐ 關鍵修正：監聽 Bootstrap 的「關閉完成」事件
-    // 當使用者點擊背景關閉 Modal 時，這裡會被觸發
-    // --------------------------------------------------
+  // 監聽 modal 的關閉事件 -> 同步到 state
+  useEffect(() => {
+    const modalElement = modalRef.current;
+    // 監聽 Bootstrap 原生的 hidden.bs.modal 事件
     const performClose = () => {
       if (isOpen) {
-        onClose(); // 呼叫父層的關閉函式，把 React State 設回 false
+        onClose();
       }
     };
 
     modalElement.addEventListener("hidden.bs.modal", performClose);
 
-    // 清除函式 (Component 卸載時執行)
+    // cleanup function
     return () => {
       modalElement.removeEventListener("hidden.bs.modal", performClose);
-      modalInstance.dispose(); // 銷毀實體，避免殘留
     };
   }, [isOpen, onClose]);
 
