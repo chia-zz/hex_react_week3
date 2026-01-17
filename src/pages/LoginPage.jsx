@@ -19,17 +19,14 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
     try {
-      const res = await adminSignin({
-        username: "",
-        password: "",
-      });
+      const res = await adminSignin(formData);
 
       const { token, expired } = res.data;
 
       // cookie & token setting
       document.cookie = `hexToken=${token};expires=${new Date(expired)};`;
       // axios.defaults.headers.common["Authorization"] = token;
-
+      toast.success("登入成功");
       navigate("/products");
     } catch (error) {
       toast.error(`登入失敗: ${error.response?.data.message}`);
@@ -52,6 +49,7 @@ function LoginPage() {
               placeholder="name@gmail.com"
               value={formData.username}
               onChange={(e) => handleInputChange(e)}
+              required
             />
             <label htmlFor="username">Email Address</label>
           </div>
@@ -64,6 +62,7 @@ function LoginPage() {
               placeholder="12345678"
               value={formData.password}
               onChange={(e) => handleInputChange(e)}
+              required
             />
             <label htmlFor="password">Password</label>
           </div>

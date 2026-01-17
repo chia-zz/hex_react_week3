@@ -50,7 +50,7 @@ function ProductModal({
             <form>
               <div className="row text-start">
                 {/* 商品標題 */}
-                <div className="col-12 mb-3">
+                <div className="col-12 mb-2">
                   <label htmlFor="title" className="form-label">
                     商品標題
                   </label>
@@ -66,18 +66,18 @@ function ProductModal({
                 </div>
 
                 {/* 商品描述 */}
-                <div className="col-6 mb-3">
+                <div className="col-6 mb-5">
                   <label htmlFor="content" className="form-label">
                     商品描述
                   </label>
-                  <input
-                    type="text"
+                  <textarea
                     className="form-control"
                     id="content"
                     name="content"
                     value={tempProduct.content}
                     onChange={onInputChange}
                     placeholder="請輸入商品描述"
+                    rows={3}
                   />
                 </div>
                 {/* 商品說明 */}
@@ -85,14 +85,14 @@ function ProductModal({
                   <label htmlFor="description" className="form-label">
                     商品說明
                   </label>
-                  <input
-                    type="text"
+                  <textarea
                     className="form-control"
                     id="description"
                     name="description"
                     value={tempProduct.description}
                     onChange={onInputChange}
                     placeholder="請輸入商品說明"
+                    rows={3}
                   />
                 </div>
 
@@ -188,8 +188,7 @@ function ProductModal({
                 {/* 商品副圖 */}
                 <div className="col-12 mb-3 border border-primary p-3">
                   <div className="row">
-                    {" "}
-                    <p className="col-12">多圖設定</p>
+                    <p className="col-12">更多圖片</p>
                   </div>
                   <div className="col-12 d-flex gap-2">
                     {tempProduct.imagesUrl?.map((url, index) => (
